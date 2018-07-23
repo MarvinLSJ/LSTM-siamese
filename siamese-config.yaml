@@ -1,0 +1,41 @@
+experiment_name: 'siamese-dropout_0.1'
+
+task: 'train'
+make_dict: False
+data_preprocessing: False
+
+ckpt_dir: 'ckpt/'
+
+training:
+    num_epochs: 20
+    learning_rate: 0.01
+    # options = ['adam', 'adadelta', 'rmsprop']
+    optimizer: 'sgd'
+
+
+embedding:
+    full_embedding_path: 'input/wiki.es.vec'
+    cur_embedding_path: 'input/embedding.pkl'
+
+model:
+    fc_dim: 100
+    name: 'siamese'
+    embed_size: 300
+    batch_size: 1
+    embedding_freeze: False
+    encoder:
+        hidden_size: 150
+        num_layers: 1
+        bidirectional: False
+        dropout: 0.1
+
+result:
+    filename: 'result.txt'
+    filepath: 'res/'
+
+
+
+
+
+
+
