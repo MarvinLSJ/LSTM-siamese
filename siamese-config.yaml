@@ -1,4 +1,4 @@
-experiment_name: 'siamese-dropout_0.1'
+experiment_name: 'siamese-baseline'
 
 task: 'train'
 make_dict: False
@@ -27,7 +27,7 @@ model:
         hidden_size: 150
         num_layers: 1
         bidirectional: False
-        dropout: 0.1
+        dropout: 0.0
 
 result:
     filename: 'result.txt'
