@@ -94,7 +94,15 @@ def main(_):
 
     # optimizer
     learning_rate = config['training']['learning_rate']
-    optimizer = torch.optim.SGD(filter(lambda x: x.requires_grad, siamese.parameters()), lr=learning_rate)
+    if config['training']['optimizer'] == 'sgd':
+        optimizer = torch.optim.SGD(filter(lambda x: x.requires_grad, siamese.parameters()), lr=learning_rate)
+    elif config['training']['optimizer'] == 'adam':
+        optimizer = torch.optim.Adam(filter(lambda x: x.requires_grad, siamese.parameters()), lr=learning_rate)
+    elif config['training']['optimizer'] == 'adadelta':
+        optimizer = torch.optim.Adadelta(filter(lambda x: x.requires_grad, siamese.parameters()), lr=learning_rate)
+    elif config['training']['optimizer'] == 'rmsprop':
+        optimizer = torch.optim.RMSprop(filter(lambda x: x.requires_grad, siamese.parameters()), lr=learning_rate)
+    print 'Optimizer:', config['training']['learning_rate']
 
     # log info
     train_log_string = '%s :: Epoch %i :: Iter %i / %i :: train loss: %0.4f'
