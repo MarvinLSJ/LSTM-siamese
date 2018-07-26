@@ -12,6 +12,9 @@ class LSTMEncoder(nn.Module):
         self.hidden_size = config['model']['encoder']['hidden_size']
         self.num_layers = config['model']['encoder']['num_layers']
         self.bidir = config['model']['encoder']['bidirectional']
+        if self.bidir:
+            self.direction = 2
+        else: self.direction = 1
         self.dropout = config['model']['encoder']['dropout']
 
         self.embedding = config['embedding_matrix']
@@ -19,8 +22,8 @@ class LSTMEncoder(nn.Module):
                             num_layers=self.num_layers, bidirectional=self.bidir)
 
     def initHiddenCell(self):
-        rand_hidden = Variable(torch.randn(1, self.batch_size, self.hidden_size))
-        rand_cell = Variable(torch.randn(1, self.batch_size, self.hidden_size))
+        rand_hidden = Variable(torch.randn(self.direction * self.num_layers, self.batch_size, self.hidden_size))
+        rand_cell = Variable(torch.randn(self.direction * self.num_layers, self.batch_size, self.hidden_size))
         return rand_hidden, rand_cell
 
     def forward(self, input, hidden, cell):
@@ -36,10 +39,14 @@ class Siamese_lstm(nn.Module):
         self.encoder = LSTMEncoder(config)
         self.fc_dim = config['model']['fc_dim']
 
-        self.input_dim = 4 * self.encoder.hidden_size
+        self.input_dim = 5 * self.encoder.direction * self.encoder.hidden_size
+        # self.classifier = nn.Sequential(
+        #     nn.Linear(self.input_dim, self.fc_dim),
+        #     nn.Linear(self.fc_dim, 2)
+        # )
         self.classifier = nn.Sequential(
-            nn.Linear(self.input_dim, self.fc_dim),
-            nn.Linear(self.fc_dim, 2)
+            nn.Linear(self.input_dim, self.input_dim/2),
+            nn.Linear(self.input_dim/2, 2)
         )
 
     def forward(self, s1, s2):
@@ -51,14 +58,15 @@ class Siamese_lstm(nn.Module):
         # input one by one
 
         for i in range(len(s1)):
+
             v1, h1, c1 = self.encoder(s1[i], h1, c1)
 
         for j in range(len(s2)):
             v2, h2, c2 = self.encoder(s2[j], h2, c2)
 
         # utilize these two encoded vectors
-        features = torch.cat((v1, v2, torch.abs(v1 - v2), v1 * v2), 2)
-
+        features = torch.cat((v1,torch.abs(v1 - v2),v2,v1*v2, (v1+v2)/2), 2)
+        # features = v1-v2
         output = self.classifier(features)
 
         return output

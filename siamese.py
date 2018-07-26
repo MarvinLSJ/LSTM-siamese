@@ -1,5 +1,4 @@
 #coding=utf-8
-
 import os
 import yaml
 import argparse
@@ -30,12 +29,16 @@ def main(_):
 
     print('**********', config['experiment_name'],'**********')
 
+    """ Cuda Check """
+    if torch.cuda.is_available():
+        print('Using CUDA!')
+
     """ Data Preprocessing """
 
     if config['data_preprocessing']:
-        print 'Pre-processing Original Data ...'
+        print('Pre-processing Original Data ...')
         data_preprocessing()
-        print 'Data Pre-processing Done!'
+        print('Data Pre-processing Done!')
 
     """ Read Data & Get Embedding """
 
@@ -52,19 +55,19 @@ def main(_):
     trainDS = myDS(train, all_sents)
     validDS = myDS(valid, all_sents)
 
-    print 'Data size:',train_data.shape[0], test_data.shape[0]
+    print('Data size:',train_data.shape[0], test_data.shape[0])
 
     full_embed_path = config['embedding']['full_embedding_path']
     cur_embed_path = config['embedding']['cur_embedding_path']
 
     if os.path.exists(cur_embed_path) and not config['make_dict']:
         embed_dict = load_embed(cur_embed_path)
-        print 'Loaded existing embedding.'
+        print('Loaded existing embedding.')
     else:
-        print 'Making embedding...'
+        print('Making embedding...')
         embed_dict = get_embedding(trainDS.vocab._id2word, full_embed_path)
         save_embed(embed_dict,cur_embed_path)
-        print 'Saved generated embedding.'
+        print('Saved generated embedding.')
 
 
     vocab_size = len(embed_dict)
@@ -102,7 +105,8 @@ def main(_):
         optimizer = torch.optim.Adadelta(filter(lambda x: x.requires_grad, siamese.parameters()), lr=learning_rate)
     elif config['training']['optimizer'] == 'rmsprop':
         optimizer = torch.optim.RMSprop(filter(lambda x: x.requires_grad, siamese.parameters()), lr=learning_rate)
-    print 'Optimizer:', config['training']['learning_rate']
+    print('Optimizer:', config['training']['optimizer'])
+    print('Learning rate:', config['training']['learning_rate'])
 
     # log info
     train_log_string = '%s :: Epoch %i :: Iter %i / %i :: train loss: %0.4f'
@@ -118,8 +122,13 @@ def main(_):
         siamese.load_state_dict(ckpt['siamese'])
         optimizer.load_state_dict(ckpt['optimizer'])
     else:
-        epoch = 0
-        print 'Fresh start!\n'
+        epoch = 1
+        print('Fresh start!\n')
+
+
+    if torch.cuda.is_available():
+        criterion = criterion.cuda()
+        siamese = siamese.cuda()
 
     """ Train """
 
@@ -131,11 +140,11 @@ def main(_):
         best_record = 10.0
 
         # training
-        print 'Experiment:{}\n'.format(config['experiment_name'])
+        print('Experiment: {}\n'.format(config['experiment_name']))
 
         while epoch < config['training']['num_epochs']:
 
-            print 'Start Epoch{} Training...'.format(epoch)
+            print('Start Epoch {} Training...'.format(epoch))
 
             # loss
             train_loss = []
@@ -168,11 +177,11 @@ def main(_):
                     train_loss = []
 
             # Record at every epoch
-            print 'Train Loss at epoch{}: {}\n'.format(epoch, np.mean(train_loss_sum))
+            print('Train Loss at epoch {}: {}\n'.format(epoch, np.mean(train_loss_sum)))
             train_loss_record.append(np.mean(train_loss_sum))
 
             # Valid
-            print 'Epoch{} Validating...'.format(epoch)
+            print('Epoch {} Validating...'.format(epoch))
 
             # loss
             valid_loss = []
@@ -195,6 +204,11 @@ def main(_):
             # Record
             valid_loss_record.append(np.mean(valid_loss))
             epoch += 1
+
+            if np.mean(valid_loss)-np.mean(train_loss_sum) > 0.02:
+                 print("Early Stopping!")
+                 break
+
             # Keep track of best record
             if np.mean(valid_loss) < best_record:
                 best_record = np.mean(valid_loss)
@@ -205,11 +219,11 @@ def main(_):
                     'optimizer': optimizer.state_dict(),
                 }
                 torch.save(state_dict, ckpt_path)
-                print 'Model saved!\n'
+                print('Model saved!\n')
 
     """ Inference """
 
-    if config['taks'] == 'inference':
+    if config['task'] == 'inference':
         testDS = mytestDS(test_data, all_sents)
         # Do not shuffle here
         test_dataloader = DataLoader(dataset=testDS, num_workers=2, batch_size=1)
@@ -230,10 +244,11 @@ def main(_):
             result += res.data.tolist()
 
         result = pd.DataFrame(result)
-        print 'Inference Done.'
+        print(result.shape)
+        print('Inference Done.')
         res_path = os.path.join(config['result']['filepath'], config['result']['filename'])
         result.to_csv(res_path, header=False, index=False)
-        print 'Result has writtn to', res_path, ', Good Luck!'
+        print('Result has writtn to', res_path, ', Good Luck!')
 
 
 
