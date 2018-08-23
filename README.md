@@ -1,3 +1,30 @@
+Table of Contents
+=================
+
+* [Competition Introduction]()
+   * [Data Description]()
+   * [Goal and Evaluation]()
+* [ML Model]()
+* [Deep Model]()
+   * [Basic Model: LSTM-Siamese]()
+      * [Name Origin]()
+      * [Main Idea]()
+      * [Baseline]()
+      * [Some Attempts]()
+      * [Baseline result]()
+   * [Data Augmentation]()
+      * [Main Idea]()
+      * [Problems]()
+      * [Augmentation result]()
+   * [Transfer Learning]()
+      * [Main Idea]()
+      * [Transfer result]()
+* [Ensemble]()
+* [Implementation Details]()
+   * [Basic Model]()
+   * [Data Augmentation]()
+   * [Transfer Learning]()
+
 # cikm 2018 - Sentence Similarity  
 
 AliMe is a chatbot for online shopping in a global context, this task is solving the short text matching problem with different language (Spanish & English)
