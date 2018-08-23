@@ -1,28 +1,30 @@
-# cikm 
+# cikm 2018 - Sentence Similarity  
 
-## Competition Introduction
 
-### Data Description
+## Competition Introduction  
 
-![Data description](/Users/liushijing/PycharmProjects/LSTM-siamese/summary/Data%20description.png)
 
-#### Training Data
+### Data Description  
+
+<div align=center><img src="/summary/Data%20description.png" alt="Data description"/></div>
+
+#### Training Data  
 
 21400 Labeled Spanish sentence pairs & English sentence pairs are provided;
 
 55669 Unlabeled Spanish sentences & corresponding English translations are provided.
 
-#### Test Data
+#### Test Data  
 
 5000 Spanish sentence pairs 
 
-### Goal and Evaluation
+### Goal and Evaluation  
 
 Predicting the similarity of Spanish sentence pairs in test set.
 
 Evaluated result by logloss.
 
-## ML Model
+## ML Model  
 
 
 
@@ -32,7 +34,7 @@ Common thoughts would be finding a way to represent sentences and calculate thei
 
 ### Basic Model: LSTM-Siamese 
 
-![siamese model](/Users/liushijing/PycharmProjects/LSTM-siamese/summary/siamese%20model.png)
+<div align=center><img src="/summary/siamese%20model.png" alt="siamese model"/></div>
 
 #### Name Origin
 
@@ -46,7 +48,7 @@ This model takes in one sentence pair, encoding each sentence into vector repres
 
 With standard parameter settings as follows, the validation loss can be 0.3366, which is a pretty well off-line score.
 
-![Siamese-baseline](/Users/liushijing/PycharmProjects/LSTM-siamese/summary/baseline.png)
+<div align=center><img src="/summary/baseline.png" alt="Siamese-baseline"/></div>
 
 ##### Baseline configuration
 
@@ -160,7 +162,7 @@ Here's how we do it:
 
 Constructing Spanish sentence pairs by aligning them in rows and columns, and calculating their similarities in a unsupervised way. 
 
-![Data Augmentation](/Users/liushijing/PycharmProjects/LSTM-siamese/summary/Data%20Augmentation.png)
+<div align=center><img src="/summary/Data%20Augmentation.png" alt="Data Augmentation"/></div>
 
 First question is how to embedding the sentences. 
 
@@ -168,9 +170,9 @@ Following the simple and effective fashion, the first choice would be averaging 
 
 Alternatively, it could be done in a more elaborate way, using AutoEncoder to train a sentence encoder. As the data amount is large enough, the encoder may be able to capture proper representation.
 
-Secondly, the similarity between two sentences can be measured by several kind of distances, I prefer the cosine and the word mover's distance. Here are a example done during my intern applying these two method to calculate phrases'(store tags) similarity. (Link)
+Secondly, the similarity between two sentences can be measured by several kind of distances, I prefer the cosine and the word mover's distance. Here are a example done during my intern applying these two method to calculate phrases'(store tags) similarity. [Phrase Similarity](https://github.com/MarvinLSJ/meituan/blob/master/similar_tags.ipynb)
 
-Here are some other thoughts about the data augmentation, in a traditional way with synonym substitution, and an effective but not so practical way of double translation. (Link)
+Here are some other thoughts about the data augmentation, in a traditional way with synonym substitution, and an effective but not so practical way of double translation. [Data Augmentation](https://github.com/MarvinLSJ/meituan/blob/master/aug_dialog.ipynb)
 
 #### Problems
 
@@ -190,7 +192,7 @@ The ideal way of doing so is using all sentences to find top and bottom 1 and no
 
 ### Transfer Learning
 
-![Transfer](/Users/liushijing/PycharmProjects/LSTM-siamese/summary/Transfer.png)
+<div align=center><img src="/summary/Transfer.png" alt="Transfer"/></div>
 
 As we are provided labeled English data, another thoughts would be using transfer learning. 
 
@@ -216,7 +218,7 @@ That is a quick and not fully extended attempt. Here are some after-thoughts: Af
 
 2. Stacking
 
-![Stacking](/Users/liushijing/PycharmProjects/LSTM-siamese/summary/Stacking.png)
+<div align=center><img src="/summary/Stacking.png" alt="Stacking"/></div>
 
 Stacking can be more comprehensive, using the first level model to extract different features.
 
@@ -224,57 +226,18 @@ Stacking can be more comprehensive, using the first level model to extract diffe
 
 ### Basic Model
 
+Step by step explanation: [Explanation](https://github.com/MarvinLSJ/LSTM-siamese/blob/master/Explanation.ipynb)
+
+[Main](https://github.com/MarvinLSJ/LSTM-siamese/blob/master/siamese.py) : Run this to train model and inference
+
+[Configuration File](https://github.com/MarvinLSJ/LSTM-siamese/blob/master/siamese-config.yaml) : All configurations and parameters are set in here
+
+[Model](https://github.com/MarvinLSJ/LSTM-siamese/blob/master/model.py) : Siamese-LSTM model in PyTorch
+
+[Dataset](https://github.com/MarvinLSJ/LSTM-siamese/blob/master/data.py) : How samples are stored and extracted
+
+[Pre-processing for Sentences & Embedding](https://github.com/MarvinLSJ/LSTM-siamese/blob/master/utils.py) : Pre-processing from raw data, embedding 
 
 
-## How to use:
-
-Main file is **'siamese.py'**, the configuration file is **'siamese-config.yaml'**.  
-
-### 1. Initialization:
-
-First run with the original dataset, you should input parameters **'--config siamese-config.yaml'**, while configuring **make_dict** and **data_preprocessing** as **True**, it will make the embedding and preprocess the original dataset, saved them for future usage.  
 
 
-### 2. Model:
-
-**Tuning Parameters**:
-    
-#### a. Classifier
-
-fc_dim: classifier fully connected layer size, 
-
-#### b. Encoder
-
-   hidden_size: lstm hidden size
-   num_layers: lstm layer 
-   bidirectional: bidirectional lstm can get more info
-   dropout: avoid overfitting
-
-#### c. Embedding
-
-   embedding_freeze: Set it to false, then the embedding will participate backpropogation. Not so good from my experience, especially small training dataset.
-    
-#### d. Other
-
-**Structure**:
-    
-#### a. Classifier
-
-fc layers, non-linear fc layers(add ReLU)
-
-#### b. Encoder 
-
-Features generating method, current method is (v1, v2, abs(v1-v2), v1*v2), more features with different vector distance measurement?
-        
-​    
-### 3. Training
-
-#### a. Optimizer
-
-   Default SGD, lots of optimizer in torch.
-
-#### b. Learning rate
-
-   It should be small enough to avoid oscillation. Furthur exploration can be dynamic lr clipping.
-
-#### c. Other
