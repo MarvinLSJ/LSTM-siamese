@@ -1,5 +1,8 @@
 # cikm 2018 - Sentence Similarity  
 
+AliMe is a chatbot for online shopping in a global context, this task is solving the short text matching problem with different language (Spanish & English)
+
+
 
 ## Competition Introduction  
 
