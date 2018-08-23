@@ -26,7 +26,7 @@ Evaluated result by logloss.
 
 ## ML Model  
 
-
+Developed by [freedomwyl](https://github.com/freedomwyl) in [Link](https://github.com/freedomwyl/cikm2018)
 
 ## Deep Model
 
@@ -224,9 +224,11 @@ Stacking can be more comprehensive, using the first level model to extract diffe
 
 ## Implementation Details
 
+
+
 ### Basic Model
 
-Step by step explanation: [Explanation](https://github.com/MarvinLSJ/LSTM-siamese/blob/master/Explanation.ipynb)
+Step by step Jupyter Notebook explanation: [Explanation](https://github.com/MarvinLSJ/LSTM-siamese/blob/master/Explanation.ipynb)
 
 [Main](https://github.com/MarvinLSJ/LSTM-siamese/blob/master/siamese.py) : Run this to train model and inference
 
@@ -240,4 +242,21 @@ Step by step explanation: [Explanation](https://github.com/MarvinLSJ/LSTM-siames
 
 
 
+### Data Augmentation
+
+[Data Augmentation Jupyter notebook](https://github.com/MarvinLSJ/LSTM-siamese/blob/master/Data-augmenting.ipynb) : Details in data augmentation using unlabeled data
+
+[Train with augmented data](https://github.com/MarvinLSJ/LSTM-siamese/blob/master/Prediction_with_augmented_data.ipynb) : Using augmented data with 700 unlabeled sentences to train model
+
+[Other Augmentation Methods](https://github.com/MarvinLSJ/meituan/blob/master/aug_dialog.ipynb): Augmentation with synonym substitution and double-translation
+
+
+
+### Transfer Learning
+
+Transfer learning Jupyter Notebook explanation: [Transfer Explanation](https://github.com/MarvinLSJ/LSTM-siamese/blob/master/Transfer-Ready.ipynb)
+
+[Transfer Main](https://github.com/MarvinLSJ/LSTM-siamese/blob/master/Transfer.py) : Run this to train transfering model and inference
+
+[Transfer Configuration](https://github.com/MarvinLSJ/LSTM-siamese/blob/master/transfer-config.yaml) : Configuration file for transfer learning
 
