@@ -1,0 +1,45 @@
+experiment_name: 'siamese-transfer-baseline'
+
+task: 'inference'
+make_dict: False
+data_preprocessing: False
+
+ckpt_dir: 'ckpt/'
+
+training:
+    num_epochs: 40
+    earlystop: 0.3
+    en_learning_rate: 0.01
+    en_optimizer: 'sgd'
+    sp_learning_rate: 0.01
+    sp_optimizer: 'adadelta'
+    # optimizer options = ['adam', 'adadelta', 'rmsprop']
+
+
+embedding:
+    full_embedding_path: 'input/wiki.es.vec'
+    cur_embedding_path: 'input/embedding.pkl'
+
+model:
+    fc_dim: 50
+    fc_dropout: 0.1
+    name: 'siamese'
+    embed_size: 300
+    batch_size: 1
+    embedding_freeze: False
+    encoder:
+        hidden_size: 50
+        num_layers: 1
+        bidirectional: False
+        dropout: 0.5
+
+result:
+    filename: 'result.txt'
+    filepath: 'res/'
+
+
+
+
+
+
+
