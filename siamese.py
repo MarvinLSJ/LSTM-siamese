@@ -31,7 +31,8 @@ def main(_):
 
     """ Cuda Check """
     if torch.cuda.is_available():
-        print('Using CUDA!')
+        print('Using GPU!')
+    else: print('No GPU!')
 
     """ Data Preprocessing """
 
@@ -88,6 +89,7 @@ def main(_):
 
     # model
     siamese = Siamese_lstm(config)
+    print(siamese)
 
     # loss func
     loss_weights = Variable(torch.FloatTensor([1, 3]))
@@ -164,8 +166,13 @@ def main(_):
                 output = siamese(s1, s2)
                 output = output.squeeze(0)
 
+                # label cuda
+                label = Variable(label)
+                if torch.cuda.is_available():
+                    label = label.cuda()
+
                 # loss backward
-                loss = criterion(output, Variable(label))
+                loss = criterion(output, label)
                 loss.backward()
                 optimizer.step()
                 train_loss.append(loss.data.cpu())
@@ -196,8 +203,13 @@ def main(_):
                 output = siamese(s1, s2)
                 output = output.squeeze(0)
 
+                # label cuda
+                label = Variable(label)
+                if torch.cuda.is_available():
+                    label = label.cuda()
+
                 # loss
-                loss = criterion(output, Variable(label))
+                loss = criterion(output, label)
                 valid_loss.append(loss.data.cpu())
 
             print(valid_log_string % (datetime.now(), epoch, np.mean(valid_loss)))
