@@ -33,7 +33,7 @@ Table of Contents
 
 AliMe is a chatbot for online shopping in a global context, this task is solving the short text matching problem with different language (Spanish & English)
 
-
+Competition Website: https://tianchi.aliyun.com/competition/introduction.htm?spm=5176.100150.711.6.600e2784M5Z0uW&raceId=231661
 
 ## Competition Introduction  
 
