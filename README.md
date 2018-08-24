@@ -4,9 +4,9 @@ AliMe is a chatbot for online shopping in a global context, this task is solving
 
 [Competition Website](https://tianchi.aliyun.com/competition/introduction.htm?spm=5176.100150.711.6.600e2784M5Z0uW&raceId=231661)
 
-Result:
-Single Deep Model: 66/1027
-Ensemble Model: 38/1027
+Result:  
+Single Deep Model: 66/1027  
+Ensemble Model: 38/1027  
 
 [Github Link]( https://github.com/MarvinLSJ/LSTM-siamese)
 
