@@ -21,54 +21,52 @@ Table of Contents
          * [Transfer Learning](#transfer-learning)
             * [Main Idea](#main-idea-2)
             * [Transfer result](#transfer-result)
+      * [Result](#result)
       * [Ensemble](#ensemble)
       * [Implementation Details](#implementation-details)
          * [Basic Model](#basic-model)
          * [Data Augmentation](#data-augmentation-1)
          * [Transfer Learning](#transfer-learning-1)
 
-
-
 # cikm 2018 - Sentence Similarity
 
 AliMe is a chatbot for online shopping in a global context, this task is solving the short text matching problem with different language (Spanish & English)
 
-Competition Website: https://tianchi.aliyun.com/competition/introduction.htm?spm=5176.100150.711.6.600e2784M5Z0uW&raceId=231661
+Competition Website: <https://tianchi.aliyun.com/competition/introduction.htm?spm=5176.100150.711.6.600e2784M5Z0uW&raceId=231661>
 
-## Competition Introduction  
+## Competition Introduction
 
+### Data Description
 
-### Data Description  
+![Data description](/Users/liushijing/PycharmProjects/LSTM-siamese/summary/Data%20description.png)
 
-<div align=center><img src="/summary/Data%20description.png" alt="Data description"/></div>
-
-#### Training Data  
+#### Training Data
 
 21400 Labeled Spanish sentence pairs & English sentence pairs are provided;
 
 55669 Unlabeled Spanish sentences & corresponding English translations are provided.
 
-#### Test Data  
+#### Test Data
 
 5000 Spanish sentence pairs 
 
-### Goal and Evaluation  
+### Goal and Evaluation
 
 Predicting the similarity of Spanish sentence pairs in test set.
 
 Evaluated result by logloss.
 
-## ML Model  
+## ML Model
 
-Developed by [freedomwyl](https://github.com/freedomwyl) in [Link](https://github.com/freedomwyl/cikm2018)
+Developed by [freedomwyl](https://github.com/freedomwyl) in [Link](https://github.com/freedomwyl/cikm2018)
 
 ## Deep Model
 
 Common thoughts would be finding a way to represent sentences and calculate their similarity, with a little elaboration, here comes the basic model.
 
-### Basic Model: LSTM-Siamese 
+### Basic Model: LSTM-Siamese
 
-<div align=center><img src="/summary/siamese%20model.png" alt="siamese model"/></div>
+![siamese model](/Users/liushijing/PycharmProjects/LSTM-siamese/summary/siamese%20model.png)
 
 #### Name Origin
 
@@ -80,45 +78,45 @@ This model takes in one sentence pair, encoding each sentence into vector repres
 
 #### Baseline
 
-With standard parameter settings as follows, the validation loss can be 0.3366, which is a pretty well off-line score.
+With standard parameter settings as follows, the validation loss can be 0.3463, which is a pretty well off-line score.
 
-<div align=center><img src="/summary/baseline.png" alt="Siamese-baseline"/></div>
+![Siamese-baseline](/Users/liushijing/PycharmProjects/LSTM-siamese/summary/baseline.png)
 
 ##### Baseline configuration
 
-experiment_name: 'siamese-baseline'
+experiment_name: 'siamese-baseline'  
 
-task: 'train'
-make_dict: False
-data_preprocessing: False
+task: 'train'  
+make_dict: False  
+data_preprocessing: False  
 
-ckpt_dir: 'ckpt/'
+ckpt_dir: 'ckpt/'  
 
-training:
-    num_epochs: 20
+training:  
+    num_epochs: 20  
     learning_rate: 0.01
-    # options = ['adam', 'adadelta', 'rmsprop']
-    optimizer: 'sgd'
+    #options = ['adam', 'adadelta', 'rmsprop']  
+    optimizer: 'sgd'  
 
-embedding:
-    full_embedding_path: 'input/wiki.es.vec'
-    cur_embedding_path: 'input/embedding.pkl'
+embedding:  
+    full_embedding_path: 'input/wiki.es.vec'  
+    cur_embedding_path: 'input/embedding.pkl'  
 
-model:
-    fc_dim: 100
-    name: 'siamese'
-    embed_size: 300
-    batch_size: 1
-    embedding_freeze: False
-    encoder:
-        hidden_size: 150
-        num_layers: 1
-        bidirectional: False
-        dropout: 0.5
+model:  
+    fc_dim: 100  
+    name: 'siamese'   
+    embed_size: 300  
+    batch_size: 1  
+    embedding_freeze: False  
+    encoder:  
+        hidden_size: 150  
+        num_layers: 1  
+        bidirectional: False  
+        dropout: 0.5  
 
-result:
-    filename: 'result.txt'
-    filepath: 'res/'
+result:  
+    filename: 'result.txt'  
+    filepath: 'res/'  
 
 
 
@@ -196,7 +194,7 @@ Here's how we do it:
 
 Constructing Spanish sentence pairs by aligning them in rows and columns, and calculating their similarities in a unsupervised way. 
 
-<div align=center><img src="/summary/Data%20Augmentation.png" alt="Data Augmentation"/></div>
+![Data Augmentation](/Users/liushijing/PycharmProjects/LSTM-siamese/summary/Data%20Augmentation.png)
 
 First question is how to embedding the sentences. 
 
@@ -204,19 +202,21 @@ Following the simple and effective fashion, the first choice would be averaging 
 
 Alternatively, it could be done in a more elaborate way, using AutoEncoder to train a sentence encoder. As the data amount is large enough, the encoder may be able to capture proper representation.
 
-Secondly, the similarity between two sentences can be measured by several kind of distances, I prefer the cosine and the word mover's distance. Here are a example done during my intern applying these two method to calculate phrases'(store tags) similarity. [Phrase Similarity](https://github.com/MarvinLSJ/meituan/blob/master/similar_tags.ipynb)
+Secondly, the similarity between two sentences can be measured by several kind of distances, I prefer the cosine and the word mover's distance. Here are a example done during my intern applying these two method to calculate phrases'(store tags) similarity. (Link)
 
-Here are some other thoughts about the data augmentation, in a traditional way with synonym substitution, and an effective but not so practical way of double translation. [Data Augmentation](https://github.com/MarvinLSJ/meituan/blob/master/aug_dialog.ipynb)
+Here are some other thoughts about the data augmentation, in a traditional way with synonym substitution, and an effective but not so practical way of double translation. (Link)
 
 #### Problems
 
 In doing so, I encountered a large problem when calculating the huge similarity matrix. In this calculation, we need to do O(n^2) to get the similarity matrix, at best O(n)*O(logn) to select the k best and worse result for every sentence, while the n is near 50k, that is impossible to run on single PC, and still haven't figured out how to do it now. 
 
-Thus, I run this augmentation with some twitching on 700  to get 13216 positive samples and 11569 negtive samples, and had another run on 1000 sentences.
+Thus, I run this augmentation with some twitching on 700  to get 13216 positive samples and 11569 negtive samples, and had another run on 1000 sentences to get 38345 positive samples and 28635 negative samples. (To balance the 3:1 neg-pos ratio in original dataset)
 
 #### Augmentation result
 
-Local loss is really good, but online still not ideal.
+![aug-baseline](/Users/liushijing/PycharmProjects/LSTM-siamese/summary/aug-baseline.png)
+
+This is the result with augmentation with 1000 sentences. Local loss is really good to be around 0.1, but online still not ideal.
 
 That may cause by the selection from the similarity matrix, selecting 10 best and 10 worse to be positive and negative examples makes the augmented data looks good on amounts, using only 700 sentences to get 24000 boosting on training data. But it actually has so many repeating data like (s1, s2) (s2, s1), that leads to a even more servere overfitting.
 
@@ -226,7 +226,7 @@ The ideal way of doing so is using all sentences to find top and bottom 1 and no
 
 ### Transfer Learning
 
-<div align=center><img src="/summary/Transfer.png" alt="Transfer"/></div>
+![Transfer](/Users/liushijing/PycharmProjects/LSTM-siamese/summary/Transfer.png)
 
 As we are provided labeled English data, another thoughts would be using transfer learning. 
 
@@ -238,7 +238,31 @@ The idea is rather simple, train the siamese-LSTM on English labeled data first,
 
 #### Transfer result
 
-That is a quick and not fully extended attempt. Here are some after-thoughts: After transfer, there should be some frozen and unfrozen layers, especially the classifier layers, the English siamese may learn different features from Spanish input, so the classifier is doing a totally different job, which lead to a worse loss. Maybe we can freeze the classifier first and train encoder part, and then fine-tune the encoder part.
+![transfer-baseline](/Users/liushijing/PycharmProjects/LSTM-siamese/summary/transfer-baseline.png)
+
+![transfer_2layer](/Users/liushijing/PycharmProjects/LSTM-siamese/summary/transfer_2layer.png)
+
+That is a quick and not fully extended attempt. As we can see from above, the result get better using 2 layer LSTM, but transfer result still can't beat former result.
+
+Here are some after-thoughts: After transfer, there should be some frozen and unfrozen layers, especially the classifier layers, the English siamese may learn different features from Spanish input, so the classifier is doing a totally different job, which lead to a worse loss. Maybe we can freeze the classifier first and train encoder part, and then fine-tune the encoder part.
+
+## Result
+
+| **Siamese-LSTM**      | **Train Loss** | **Valid Loss** | **Optimizer** **Learning Rate** | **Explanation**                                              | **Analysis**                                                 |
+| --------------------- | -------------- | -------------- | ------------------------------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
+| **Baseline**          | 0.3464         | 0.3463         | SGD 0.01                        | baseline model with 0.5 dropout                              |                                                              |
+|                       | 0.3651         | 0.3667         | Adam 0.0001                     | change optimizer                                             |                                                              |
+| **Bidirectional**     | 0.4427         | 0.4413         | SGD 0.01                        | Bidirectional LSTM                                           | Not helpful                                                  |
+| **Dropout**           | 0.3833         | 0.3928         | SGD 0.01                        | Dropout 0.7                                                  | Too much dropout                                             |
+| **2-features**        | 0.3421         | 0.3668         | SGD 0.01                        | using embeded sentence vector v1, v2 as features             | Model discriminating ability is constrained by only 2 features, but may get more generalization ability |
+| **3-features**        | 0.4974         | 0.5100         | SGD 0.01                        | v1, v2, \|v1-v2\|                                            |                                                              |
+|                       | 0.4096         | 0.4415         | Adadelta 0.01                   | change optimizer                                             | Adadelta can do better with adaptive learning rate           |
+| **4-features**        | 0.3914         | 0.3972         | SGD 0.01                        | v1, v2, \|v1-v2\|, (v1+v2)/2                                 | Changing from v1*v2 to (v1+v2)/2, thought the avg can extract more info than v1*v2, seems not that way |
+|                       | 0.3801         | 0.3740         | RMSprop 0.0001                  | change optimizer                                             | Adaptive learning rate wins again                            |
+| **5-features**        | 0.4112         | 0.4407         | Adadelta 0.01                   | v1, v2, \|v1-v2\|, (v1+v2)/2, v1*v2                          | Thus adding avg features even has negative effect            |
+| **Transfer**          | 0.3657-0.4765  | 0.3794-0.4986  | SGD 0.01                        | All trainable transfer from English to Spanish model         | English and Spanish may not that similar, or at least according to this model … |
+|                       | 0.4208-0.3605  | 0.4376-0.3699  | SGD 0.01                        | 2 layer LSTM                                                 | Adding 1 layer give us some hope, but it’s just better a bit. |
+| **Data Augmentation** | 0.1082         | 0.1136         | SGD 0.01                        | Adding 38345 positive samples and 28635 negative samples generated from 1000 sentences | Proved data is the most critical point. But the way we augmented need to be modified. |
 
 
 
@@ -252,9 +276,11 @@ That is a quick and not fully extended attempt. Here are some after-thoughts: Af
 
 2. Stacking
 
-<div align=center><img src="/summary/Stacking.png" alt="Stacking"/></div>
+![Stacking](/Users/liushijing/PycharmProjects/LSTM-siamese/summary/Stacking.png)
 
 Stacking can be more comprehensive, using the first level model to extract different features.
+
+## 
 
 ## Implementation Details
 
@@ -293,4 +319,3 @@ Transfer learning Jupyter Notebook explanation: [Transfer Explanation](https://g
 [Transfer Main](https://github.com/MarvinLSJ/LSTM-siamese/blob/master/Transfer.py) : Run this to train transfering model and inference
 
 [Transfer Configuration](https://github.com/MarvinLSJ/LSTM-siamese/blob/master/transfer-config.yaml) : Configuration file for transfer learning
-
