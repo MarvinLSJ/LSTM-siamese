@@ -1,3 +1,17 @@
+# cikm 2018 - Sentence Similarity
+
+AliMe is a chatbot for online shopping in a global context, this task is solving the short text matching problem with different language (Spanish & English)
+
+[Competition Website](https://tianchi.aliyun.com/competition/introduction.htm?spm=5176.100150.711.6.600e2784M5Z0uW&raceId=231661)
+
+Result:
+Single Deep Model: 66/1027
+Ensemble Model: 38/1027
+
+[Github Link]( https://github.com/MarvinLSJ/LSTM-siamese)
+
+
+
 Table of Contents
 =================
 
@@ -25,14 +39,14 @@ Table of Contents
       * [Ensemble](#ensemble)
       * [Implementation Details](#implementation-details)
          * [Basic Model](#basic-model)
+
          * [Data Augmentation](#data-augmentation-1)
+
          * [Transfer Learning](#transfer-learning-1)
 
-# cikm 2018 - Sentence Similarity
+           
 
-AliMe is a chatbot for online shopping in a global context, this task is solving the short text matching problem with different language (Spanish & English)
 
-Competition Website: <https://tianchi.aliyun.com/competition/introduction.htm?spm=5176.100150.711.6.600e2784M5Z0uW&raceId=231661>
 
 ## Competition Introduction
 
