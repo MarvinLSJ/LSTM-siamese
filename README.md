@@ -38,7 +38,7 @@ Competition Website: <https://tianchi.aliyun.com/competition/introduction.htm?sp
 
 ### Data Description
 
-![Data description](/Users/liushijing/PycharmProjects/LSTM-siamese/summary/Data%20description.png)
+![Data description](summary/Data%20description.png)
 
 #### Training Data
 
@@ -66,7 +66,7 @@ Common thoughts would be finding a way to represent sentences and calculate thei
 
 ### Basic Model: LSTM-Siamese
 
-![siamese model](/Users/liushijing/PycharmProjects/LSTM-siamese/summary/siamese%20model.png)
+![siamese model](summary/siamese%20model.png)
 
 #### Name Origin
 
@@ -80,7 +80,7 @@ This model takes in one sentence pair, encoding each sentence into vector repres
 
 With standard parameter settings as follows, the validation loss can be 0.3463, which is a pretty well off-line score.
 
-![Siamese-baseline](/Users/liushijing/PycharmProjects/LSTM-siamese/summary/baseline.png)
+![Siamese-baseline](summary/baseline.png)
 
 ##### Baseline configuration
 
@@ -194,7 +194,7 @@ Here's how we do it:
 
 Constructing Spanish sentence pairs by aligning them in rows and columns, and calculating their similarities in a unsupervised way. 
 
-![Data Augmentation](/Users/liushijing/PycharmProjects/LSTM-siamese/summary/Data%20Augmentation.png)
+![Data Augmentation](summary/Data%20Augmentation.png)
 
 First question is how to embedding the sentences. 
 
@@ -214,7 +214,7 @@ Thus, I run this augmentation with some twitching on 700  to get 13216 positive 
 
 #### Augmentation result
 
-![aug-baseline](/Users/liushijing/PycharmProjects/LSTM-siamese/summary/aug-baseline.png)
+![aug-baseline](summary/aug-baseline.png)
 
 This is the result with augmentation with 1000 sentences. Local loss is really good to be around 0.1, but online still not ideal.
 
@@ -226,7 +226,7 @@ The ideal way of doing so is using all sentences to find top and bottom 1 and no
 
 ### Transfer Learning
 
-![Transfer](/Users/liushijing/PycharmProjects/LSTM-siamese/summary/Transfer.png)
+![Transfer](summary/Transfer.png)
 
 As we are provided labeled English data, another thoughts would be using transfer learning. 
 
@@ -238,9 +238,9 @@ The idea is rather simple, train the siamese-LSTM on English labeled data first,
 
 #### Transfer result
 
-![transfer-baseline](/Users/liushijing/PycharmProjects/LSTM-siamese/summary/transfer-baseline.png)
+![transfer-baseline](summary/transfer-baseline.png)
 
-![transfer_2layer](/Users/liushijing/PycharmProjects/LSTM-siamese/summary/transfer_2layer.png)
+![transfer_2layer](summary/transfer_2layer.png)
 
 That is a quick and not fully extended attempt. As we can see from above, the result get better using 2 layer LSTM, but transfer result still can't beat former result.
 
@@ -276,7 +276,7 @@ Here are some after-thoughts: After transfer, there should be some frozen and un
 
 2. Stacking
 
-![Stacking](/Users/liushijing/PycharmProjects/LSTM-siamese/summary/Stacking.png)
+![Stacking](summary/Stacking.png)
 
 Stacking can be more comprehensive, using the first level model to extract different features.
 
